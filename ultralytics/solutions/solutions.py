@@ -478,7 +478,12 @@ class SolutionAnnotator(Annotator):
             Modifies self.im in-place.
         """
         indices = indices or [2, 5, 7]
-        points = [(int(k[0]), int(k[1])) for i, k in enumerate(keypoints) if i in indices and k[2] >= conf_thresh]
+        points = []
+        for j in indices:
+            kp = keypoints[j]
+            conf = float(kp[2]) if len(kp) > 2 else 1.0
+            if conf >= conf_thresh:
+                points.append((int(kp[0]), int(kp[1])))
 
         # Draw lines between consecutive points
         for start, end in zip(points[:-1], points[1:]):
